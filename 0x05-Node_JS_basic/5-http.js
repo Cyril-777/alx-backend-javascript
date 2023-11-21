@@ -1,6 +1,8 @@
 const http = require('http');
 const { countStudents } = require('./3-read_file_async');
 
+const host = '127.0.0.1';
+
 const app = http.createServer((req, res) => {
   if (req.url === '/') {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
@@ -21,6 +23,6 @@ const app = http.createServer((req, res) => {
   }
 });
 
-app.listen(1245);
+app.listen(1245, host, () => {});
 
 module.exports = app;
