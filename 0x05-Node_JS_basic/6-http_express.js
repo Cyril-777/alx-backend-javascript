@@ -5,21 +5,7 @@ const port = 1245;
 
 // Define routes
 app.get('/', (req, res) => {
-  res.send('Hello Holberton School!\n');
-});
-
-// Handle undefined routes
-app.use((req, res) => {
-  res.status(404).send(`<!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="utf-8">
-      <title>Error</title>
-    </head>
-    <body>
-      <pre>Cannot GET ${req.originalUrl}</pre>
-    </body>
-    </html>`);
+  res.send('Hello Holberton School!');
 });
 
 // Start the server
