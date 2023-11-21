@@ -3,6 +3,7 @@ const fs = require('fs');
 
 const app = express();
 const port = 1245;
+const path = process.argv.length > 2 ? process.argv[2] : '';
 
 
 // import countStudents from './3-read_file_async'
@@ -46,12 +47,15 @@ app.get('/', (req, res) => {
 
 // Define route for the '/students' path
 app.get('/students', (req, res) => {
-  countStudents(process.argv[2])
-    .then(() => {
-      res.send('This is the list of our students\n');
+  countStudents(path)
+    .then((result) => {
+      res.write('This is the list of our students\n');
+      res.end();
     })
-    .catch(error => {
-      res.status(500).send('Cannot load the database');
+    .catch((error) => {
+      res.write('This is the list of our students\n');
+      res.write(error.message);
+      res.end();
     });
 });
 
