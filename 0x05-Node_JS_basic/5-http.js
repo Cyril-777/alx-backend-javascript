@@ -6,32 +6,47 @@ const host = '127.0.0.1';
 function countStudents(path) {
   return new Promise((resolve, reject) => {
     fs.readFile(path, (err, data) => {
-      if (err) reject(Error('Cannot load the database'));
-      if (data) {
+      if (err) {
+        reject(Error('Cannot load the database'));
+      } else if (data) {
         const content = data.toString().split('\n');
         const students = content.filter((item) => item).map((item) => item.split(','));
-        const fields = {};
-        let csStudents = [];
-        let sweStudents = [];
+        const fields = {
+          CS: {
+            count: 0,
+            list: [],
+            csCount: 0, // Initialize csCount here
+          },
+          SWE: {
+            count: 0,
+            list: [],
+            sweCount: 0, // Initialize sweCount here
+          },
+        };
         students.shift();
         students.forEach((student) => {
-          if (!fields[student[3]]) fields[student[3]] = [];
-          fields[student[3]].push(student[0]);
-        });
-        console.log(`Number of students: ${students.length}`);
-        for (const field in fields) {
-          if (field === 'CS') {
-            console.log(`Number of students in ${field}: ${fields[field].length}. List: ${fields[field].join(', ')}`);
-            csStudents = fields[field];
-          } else if (field === 'SWE') {
-            console.log(`Number of students in ${field}: ${fields[field].length}. List: ${fields[field].join(', ')}`);
-            sweStudents = fields[field];
+          if (!fields[student[3]]) {
+            fields[student[3]] = {
+              count: 0,
+              list: [],
+            };
           }
-        }
-        console.log(`Number of students in CS: ${csStudents.length}. List: ${csStudents.join(', ')}`);
-        console.log(`Number of students in SWE: ${sweStudents.length}. List: ${sweStudents.join(', ')}`);
+          fields[student[3]].count += 1;
+          fields[student[3]].list.push(student[0]);
+          if (student[3] === 'CS') {
+            fields[student[3]].csCount += 1;
+          } else if (student[3] === 'SWE') {
+            fields[student[3]].sweCount += 1;
+          }
+        });
+
+        const result = {
+          totalStudents: students.length,
+          fields,
+        };
+
+        resolve(result);
       }
-      resolve();
     });
   });
 }
