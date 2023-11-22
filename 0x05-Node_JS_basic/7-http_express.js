@@ -18,12 +18,12 @@ function countStudents(path) {
           CS: {
             count: 0,
             list: [],
-            csCount: 0,  // Initialize csCount here
+            csCount: 0, // Initialize csCount here
           },
           SWE: {
             count: 0,
             list: [],
-            sweCount: 0,  // Initialize sweCount here
+            sweCount: 0, // Initialize sweCount here
           },
         };
         students.shift();
@@ -45,7 +45,7 @@ function countStudents(path) {
 
         const result = {
           totalStudents: students.length,
-          fields: fields,
+          fields,
         };
 
         resolve(result);
@@ -63,7 +63,7 @@ app.get('/', (req, res) => {
 app.get('/students', (req, res) => {
   countStudents(path)
     .then((result) => {
-      res.write(`This is the list of our students\n`);
+      res.write('This is the list of our students\n');
       res.write(`Number of students: ${result.totalStudents}\n`);
       for (const field in result.fields) {
         if (Object.prototype.hasOwnProperty.call(result.fields, field)) {
