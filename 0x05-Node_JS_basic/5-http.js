@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 
 const host = '127.0.0.1';
+const port = 1245;
 
 function countStudents(path) {
   return new Promise((resolve, reject) => {
@@ -53,24 +54,35 @@ function countStudents(path) {
 
 const app = http.createServer((req, res) => {
   if (req.url === '/') {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Hello Holberton School!\n');
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.end('Hello Holberton School!');
   } else if (req.url === '/students') {
-    countStudents(process.argv[2])
-      .then(() => {
-        res.writeHead(200, { 'Content-Type': 'text/plain' });
-        res.end('This is the list of our students\n');
+    const path = process.argv[2];
+    countStudents(path)
+      .then(result => {
+        res.writeHead(200, {'Content-Type': 'text/plain'}); 
+        res.write(`This is the list of our students\n`);
+        res.write(`Number of students: ${result.totalStudents}\n`);
+
+        for (const field in result.fields) {
+          const fieldInfo = result.fields[field];
+          res.write(`Number of students in ${field}: ${fieldInfo.count}. List: ${fieldInfo.list.join(', ')}\n`);
+        }
+
+        res.end();
       })
-      .catch((error) => {
-        res.writeHead(500, { 'Content-Type': 'text/plain' });
-        res.end(error.message);
+      .catch(error => {
+        res.writeHead(500);
+        res.end(`This is the list of our students\n${error.message}`);  
       });
   } else {
-    res.writeHead(404, { 'Content-Type': 'text/plain' });
-    res.end('Not Found\n');
+    res.writeHead(404);
+    res.end('Route not found');
   }
 });
 
-app.listen(1245, host, () => {});
+app.listen(port, host, () => {
+  console.log(`HTTP server is running on port ${port}`);  
+});
 
 module.exports = app;
