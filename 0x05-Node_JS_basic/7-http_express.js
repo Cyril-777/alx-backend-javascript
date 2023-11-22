@@ -34,12 +34,12 @@ function countStudents(path) {
               list: [],
             };
           }
-          fields[student[3]].count++;
+          fields[student[3]].count += 1;
           fields[student[3]].list.push(student[0]);
           if (student[3] === 'CS') {
-            fields[student[3]].csCount++;
+            fields[student[3]].csCount += 1;
           } else if (student[3] === 'SWE') {
-            fields[student[3]].sweCount++;
+            fields[student[3]].sweCount += 1;
           }
         });
 
@@ -66,8 +66,10 @@ app.get('/students', (req, res) => {
       res.write(`This is the list of our students\n`);
       res.write(`Number of students: ${result.totalStudents}\n`);
       for (const field in result.fields) {
-        const fieldInfo = result.fields[field];
-        res.write(`Number of students in ${field}: ${fieldInfo.count}. List: ${fieldInfo.list.join(', ')}\n`);
+        if (Object.prototype.hasOwnProperty.call(result.fields, field)) {
+          const fieldInfo = result.fields[field];
+          res.write(`Number of students in ${field}: ${fieldInfo.count}. List: ${fieldInfo.list.join(', ')}\n`);
+        }
       }
       res.end();
     })
