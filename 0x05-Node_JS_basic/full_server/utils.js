@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-export function readDatabase(filePath) {
+function readDatabase(filePath) {
   return new Promise((resolve, reject) => {
     fs.readFile(filePath, (err, data) => {
       if (err) {
@@ -21,3 +21,5 @@ export function readDatabase(filePath) {
     });
   });
 }
+
+export default readDatabase;
