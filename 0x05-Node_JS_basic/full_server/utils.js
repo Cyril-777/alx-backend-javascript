@@ -1,23 +1,31 @@
-import fs from 'fs';
+const fs = require('fs');
 
-export function readDatabase(filePath) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(filePath, (err, data) => {
-      if (err) {
-        reject(Error('Cannot load the database'));
-      } else if (data) {
-        const content = data.toString().split('\n');
-        const students = content.filter((item) => item).map((item) => item.split(','));
-        const fields = {};
-        students.shift();
-        students.forEach((student) => {
-          if (!fields[student[3]]) {
-            fields[student[3]] = [];
-          }
-          fields[student[3]].push(student[0]);
-        });
-        resolve(fields);
-      }
-    });
-  });
+async function countStudents(path) {
+  let data;
+  try {
+    data = await fs.promises.readFile(path, 'utf8');
+  } catch (error) {
+    throw new Error('Cannot load the database');
+  }
+  const students = data.split('\r\n').slice(1)
+    .map((student) => student.split(','))
+    .map((student) => ({
+      firstName: student[0],
+      lastName: student[1],
+      age: student[2],
+      field: student[3],
+    }));
+    let fields = students.map(student => student.field);
+    let unique_fields = new Set(fields);
+    let students_by_field = {};
+    for (let field of unique_fields) {
+      students_by_field[field] = [];
+    }
+    for (let student of students) {
+        students_by_field[student.field].push(student.firstName);
+    }
+    console.log(students_by_field);
+    return students_by_field;
 }
+
+module.exports = countStudents;
